@@ -1,0 +1,17 @@
+div.tag-input {
+  float: left;
+}
+.tags span {
+  border-radius: 0.7em;
+  padding: 0.2em 0.5em;
+  background-color: #79aec8;
+  vertical-align: top;
+}
+
+.tags span a {
+  display: inline-block;
+  background: url(../img/inline-delete.svg) 0 0 no-repeat;
+  width: 16px;
+  height: 16px;
+  border: 0px none;
+}

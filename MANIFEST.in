@@ -1,0 +1,2 @@
+recursive-include array_tags/static *.css
+recursive-include array_tags/static *.js
