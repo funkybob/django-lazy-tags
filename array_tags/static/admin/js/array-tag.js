@@ -1,9 +1,9 @@
 (function($) {
     'use strict';
-    const DELIMITER = ',';
+    var DELIMITER = ',';
 
     function split_tags(value) {
-        return value.split(DELIMITER).map(x => x.trim()).filter(Boolean);
+      return value.split(DELIMITER).map(function (x) { return x.trim(); }).filter(Boolean);
     }
 
     var ArrayTag = function(el) {
@@ -14,7 +14,7 @@
         this.$orig.closest('form').on('submit', function () {
             // IE 11 unfriendly
             self.$orig.val(Array.from(self.values).join(', '));
-        })
+        });
 
         // Augment html
         // hide real input
@@ -47,19 +47,19 @@
         this.render_tags();
     };
 
-    ArrayTag.prototype.render_tags =   function () {
+    ArrayTag.prototype.render_tags = function () {
         this.$el.find('.tags').html(
             Array.from(this.values)
-                .map((val) => {return '<span>' + val + '<a href="#"></a></span>'})
+                .map(function (val) {return '<span>' + val + '<a href="#"></a></span>';})
                 .join(' ')
         );
-    }
+    };
 
     window.ArrayTag = ArrayTag;
 
     addEvent(window, 'load', function(e) {
         $('.array-tag').each(function () {
             new ArrayTag(this);
-        })
+        });
     });
 })(django.jQuery);
