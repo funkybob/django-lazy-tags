@@ -2,7 +2,7 @@ div.tag-input {
   float: left;
 }
 .tags span {
-  border-radius: 0.7em;
+  border-radius: 1em;
   padding: 0.2em 0.5em;
   background-color: #79aec8;
   vertical-align: top;
