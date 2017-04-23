@@ -3,17 +3,16 @@
     var DELIMITER = ',';
 
     function split_tags(value) {
-      return value.split(DELIMITER).map(function (x) { return x.trim(); }).filter(Boolean);
+      return value.split(DELIMITER).map((x) => x.trim()).filter(Boolean);
     }
 
     var ArrayTag = function(el) {
-        var self = this;
         this.$orig = $(el);
         this.values = new Set(split_tags(this.$orig.val()));
 
-        this.$orig.closest('form').on('submit', function () {
+        this.$orig.closest('form').on('submit', () => {
             // IE 11 unfriendly
-            self.$orig.val(Array.from(self.values).join(', '));
+            this.$orig.val(Array.from(this.values).join(', '));
         });
 
         // Augment html
@@ -29,19 +28,16 @@
         );
         this.$inp = this.$el.find('input.tag-input');
 
-        this.$el.on('click', 'a.add-tag', function (ev) {
-            var value = self.$inp.val().trim();
-            self.$inp.val('');
-            if(value) {
-                self.values.add(value);
-                self.render_tags();
-            }
+        this.$el.on('click', 'a.add-tag', () => {
+            split_tags(this.$inp.val()).forEach((val) => this.values.add(val));
+            this.$inp.val('');
+            this.render_tags();
         });
 
-        this.$el.on('click', '.tags a', function (ev) {
-          var val = $(this).parent().text().trim();
-          self.values.delete(val);
-          self.render_tags();
+        this.$el.on('click', '.tags a', (ev) => {
+          var val = $(ev.target).parent().text().trim();
+          this.values.delete(val);
+          this.render_tags();
         });
 
         this.render_tags();
@@ -50,6 +46,7 @@
     ArrayTag.prototype.render_tags = function () {
         this.$el.find('.tags').html(
             Array.from(this.values)
+                .sort()
                 .map(function (val) {return '<span>' + val + '<a href="#"></a></span>';})
                 .join(' ')
         );
