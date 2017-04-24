@@ -1,2 +1,8 @@
 *.pyc
 *.swp
+env
+.coverage
+htmlcov
+
+dist
+*.egg-info/
