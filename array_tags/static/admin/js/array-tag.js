@@ -47,7 +47,7 @@
         this.$el.find('.tags').html(
             Array.from(this.values)
                 .sort()
-                .map(function (val) {return '<span>' + val + '<a href="#"></a></span>';})
+                .map(function (val) {return '<span>' + val + '<a href="#" class="deletelink"></a></span>';})
                 .join(' ')
         );
     };
