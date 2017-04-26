@@ -1,62 +1,65 @@
-(function($) {
+(function() {
     'use strict';
-    var DELIMITER = ',';
-
-    function split_tags(value) {
-      return value.split(DELIMITER).map((x) => x.trim()).filter(Boolean);
-    }
 
     var ArrayTag = function(el) {
-        this.$orig = $(el);
-        this.values = new Set(split_tags(this.$orig.val()));
+        this.el = (typeof el === 'string') ? document.querySelector(el) : el;
+        this.el.style.display = 'none';
 
-        this.$orig.closest('form').on('submit', () => {
-            // IE 11 unfriendly
-            this.$orig.val(Array.from(this.values).join(', '));
+        this.delim = this.el.dataset['delim'] || ',';
+        this.values = new Set(this.split_tags(this.el.value));
+
+        this.el.closest('form').addEventListener('submit', (ev) => {
+            this.el.style.display = undefined;
+            this.el.value = Array.from(this.values).join(this.delim + ' ');
         });
 
-        // Augment html
-        // hide real input
-        this.$orig.hide();
-        // add our input + wrapper div + tag div
-        this.$orig.wrap('<div class="tag-input"></div>');
-        this.$el = this.$orig.parent();
-        this.$el.append(
-            '<input type="text" class="tag-input">' +
-            ' <a class="button add-tag" title="Add tag">Add</a>' +
-            '<p class="tags"></p>'
-        );
-        this.$inp = this.$el.find('input.tag-input');
+        var div = document.createElement('div');
+        div.classList.add('tag-input');
 
-        this.$el.on('click', 'a.add-tag', () => {
-            split_tags(this.$inp.val()).forEach((val) => this.values.add(val));
-            this.$inp.val('');
+        this.inp = document.createElement('input');
+        this.inp.setAttribute('type', 'text');
+        div.appendChild(this.inp);
+
+        this.button = document.createElement('a');
+        this.button.innerText = 'Add';
+        this.button.classList.add('button', 'add-tag');
+        this.button.addEventListener('click', (ev) => {
+            this.split_tags(this.inp.value).forEach((val) => this.values.add(val));
+            this.inp.value = '';
             this.render_tags();
         });
+        div.appendChild(this.button);
 
-        this.$el.on('click', '.tags a', (ev) => {
-          var val = $(ev.target).parent().text().trim();
-          this.values.delete(val);
-          this.render_tags();
+        this.tagList = document.createElement('p');
+        this.tagList.classList.add('tags');
+        this.tagList.addEventListener('click', (ev) => {
+            if(!ev.target.matches('.tags a')) return;
+            this.values.delete(ev.target.parentNode.innerText.trim());
+            this.render_tags();
         });
+        div.appendChild(this.tagList);
+
+        this.el.parentElement.insertBefore(div, this.el)
 
         this.render_tags();
     };
 
     ArrayTag.prototype.render_tags = function () {
-        this.$el.find('.tags').html(
-            Array.from(this.values)
+        this.tagList.innerHTML = Array.from(this.values)
                 .sort()
                 .map(function (val) {return '<span>' + val + '<a href="#" class="deletelink"></a></span>';})
-                .join(' ')
-        );
+                .join(' ');
     };
+
+    ArrayTag.prototype.split_tags = function (value) {
+      return value.split(this.delim).map((x) => x.trim()).filter(Boolean);
+    }
 
     window.ArrayTag = ArrayTag;
 
     addEvent(window, 'load', function(e) {
-        $('.array-tag').each(function () {
-            new ArrayTag(this);
+        Array.from(document.querySelectorAll('.array-tag')).forEach((el) => {
+            new ArrayTag(el);
         });
     });
-})(django.jQuery);
+})();
